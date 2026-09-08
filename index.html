@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimLab Survey Question Bank</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#EEF1EC;
+    --paper-deep:#E3E7DF;
+    --card:#FFFFFF;
+    --ink:#1B231F;
+    --ink-soft:#4B5750;
+    --ink-faint:#899087;
+    --line:#C9D0C6;
+    --line-soft:#DEE3D9;
+    --teal:#215D53;
+    --teal-deep:#163F38;
+    --gold:#A9781E;
+    --gold-soft:#F3E7C9;
+    --tag-a:#4C6E8A; --tag-a-bg:#E5EBF1;
+    --tag-b:#6E5B9E; --tag-b-bg:#ECE7F4;
+    --tag-c:#8A5A4C; --tag-c-bg:#F1E5E2;
+    --tag-d:#3E7D6E; --tag-d-bg:#E1EEE9;
+    --tag-e:#9E7A2E; --tag-e-bg:#F4EBD8;
+    --tag-f:#7A4C6E; --tag-f-bg:#EFE3EC;
+    --tag-g:#4C7A5A; --tag-g-bg:#E3EFE7;
+    --tag-h:#5C6E8A; --tag-h-bg:#E5E9F1;
+    --tag-i:#8A6E4C; --tag-i-bg:#F1EAE0;
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  .shell{
+    max-width:1080px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--card);
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+    position:relative;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+  }
+  .title-row{
+    padding:22px 32px 0;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.02em;
+    color:var(--teal-deep);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    font-size:24px;
+    margin:0 0 14px;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  .crumb-search-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:0 32px 14px;
+    flex-wrap:wrap;
+  }
+  .breadcrumb{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:4px;
+    font-size:13px;
+    min-height:24px;
+  }
+  .crumb-link{
+    color:var(--teal-deep);
+    cursor:pointer;
+    font-weight:600;
+    padding:3px 4px;
+    border-radius:3px;
+  }
+  .crumb-link:hover{background:var(--paper);}
+  .crumb-sep{color:var(--ink-faint); padding:0 1px;}
+  .crumb-current{
+    color:var(--ink-soft);
+    padding:3px 4px;
+    font-weight:500;
+  }
+  .search-box{
+    display:flex;
+    align-items:center;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:var(--paper);
+    padding:6px 6px 6px 12px;
+    min-width:230px;
+  }
+  .search-box input{
+    border:none;
+    background:transparent;
+    outline:none;
+    font-size:12.5px;
+    font-family:'Inter',sans-serif;
+    width:180px;
+    color:var(--ink);
+  }
+  .search-box .sx{
+    font-size:11px;
+    color:var(--ink-faint);
+    cursor:pointer;
+    padding:2px 6px;
+  }
+
+  /* ---------- Floating selected button ---------- */
+  .selected-fab{
+    position:fixed;
+    right:28px;
+    bottom:26px;
+    z-index:40;
+    background:var(--teal-deep);
+    color:#fff;
+    border:none;
+    border-radius:30px;
+    padding:13px 20px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(22,63,56,0.28);
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .selected-fab:hover{background:var(--teal);}
+  .selected-fab .badge{
+    background:var(--gold);
+    color:#241a04;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    padding:2px 8px;
+    border-radius:12px;
+    min-width:20px;
+    text-align:center;
+  }
+
+  /* ---------- Main content ---------- */
+  main{
+    padding:22px 32px 90px;
+    min-height:60vh;
+  }
+
+  .section-intro{
+    color:var(--ink-soft);
+    font-size:13px;
+    margin:0 0 20px;
+    max-width:640px;
+  }
+
+  /* Card grid (home + subcats) */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:14px;
+  }
+  .pick-card{
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:border-color .12s, transform .12s;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .pick-card:hover{
+    border-color:var(--teal);
+    transform:translateY(-1px);
+  }
+  .pick-card .letter-badge{
+    width:30px; height:30px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Source Serif 4', serif;
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+  }
+  .pick-card .pc-title{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    font-size:15.5px;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  .pick-card .pc-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .pick-card .pc-types{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    margin-top:2px;
+  }
+  .mini-tag{
+    font-size:9.5px;
+    padding:2px 6px;
+    border-radius:10px;
+    background:var(--paper);
+    color:var(--ink-soft);
+    border:1px solid var(--line-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  /* Question type filter chips */
+  .type-filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-bottom:20px;
+  }
+  .chip{
+    padding:6px 13px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    font-size:12px;
+    cursor:pointer;
+    background:var(--card);
+    color:var(--ink-soft);
+    user-select:none;
+    white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--teal);}
+  .chip.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:#241a04;
+    font-weight:600;
+  }
+  .chip .count{opacity:0.7; font-size:10.5px; margin-left:3px;}
+
+  /* Question cards */
+  .q-card{
+    display:flex;
+    gap:14px;
+    padding:16px 4px;
+    border-bottom:1px solid var(--line-soft);
+    align-items:flex-start;
+  }
+  .q-body{flex:1; min-width:0;}
+  .q-meta{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .q-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:20px;
+    letter-spacing:0.01em;
+  }
+  .q-text{
+    font-size:14.5px;
+    color:var(--ink);
+    margin:0 0 5px;
+    line-height:1.5;
+  }
+  .q-sub{
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .q-sub .dot{margin:0 6px; opacity:0.5;}
+  .q-instrument{font-style:italic;}
+  .q-notes{
+    margin-top:5px;
+    font-size:11.5px;
+    color:var(--gold);
+    background:var(--gold-soft);
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:3px;
+  }
+  .add-btn{
+    flex:0 0 auto;
+    padding:8px 15px;
+    border-radius:20px;
+    border:1px solid var(--teal-deep);
+    background:var(--card);
+    color:var(--teal-deep);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    white-space:nowrap;
+    margin-top:2px;
+  }
+  .add-btn:hover{background:var(--teal-deep); color:#fff;}
+  .add-btn.added{
+    background:var(--teal-deep);
+    color:#fff;
+  }
+  .add-btn.added:hover{background:#a13e3e; border-color:#a13e3e;}
+
+  .empty-msg{
+    padding:60px 10px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+  }
+
+  .back-row{
+    margin-bottom:16px;
+  }
+  .back-link{
+    font-size:12.5px;
+    color:var(--teal-deep);
+    cursor:pointer;
+    font-weight:600;
+  }
+  .back-link:hover{text-decoration:underline;}
+
+  /* ---------- Drawer (selected questions) ---------- */
+  .backdrop{
+    position:fixed; inset:0;
+    background:rgba(20,26,23,0.42);
+    z-index:50;
+    display:none;
+  }
+  .backdrop.open{display:block;}
+  .drawer{
+    position:fixed;
+    top:0; right:0;
+    height:100vh;
+    width:420px;
+    max-width:92vw;
+    background:var(--paper-deep);
+    z-index:51;
+    transform:translateX(100%);
+    transition:transform .22s ease;
+    display:flex;
+    flex-direction:column;
+    box-shadow:-8px 0 24px rgba(0,0,0,0.18);
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{
+    padding:22px 22px 14px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .drawer-head h2{
+    font-family:'Source Serif 4', serif;
+    font-size:19px;
+    margin:0 0 4px;
+    font-weight:600;
+  }
+  .drawer-head p{
+    margin:0;
+    font-size:12px;
+    color:var(--ink-soft);
+    max-width:300px;
+  }
+  .drawer-close{
+    border:none;
+    background:transparent;
+    font-size:18px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    padding:2px 6px;
+  }
+  .drawer-close:hover{color:var(--ink);}
+  .draft-name-row{
+    padding:14px 22px 0;
+  }
+  #surveyTitle{
+    width:100%;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-family:'Source Serif 4', serif;
+    font-size:14px;
+    background:var(--card);
+    color:var(--ink);
+  }
+  #surveyTitle:focus{outline:none; border-color:var(--teal);}
+
+  .draft-list{
+    flex:1;
+    overflow-y:auto;
+    padding:14px 16px 14px;
+  }
+  .draft-empty{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12.5px;
+    padding:50px 18px;
+    line-height:1.6;
+  }
+  .draft-item{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 10px 10px 12px;
+    margin-bottom:8px;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .draft-item .order-n{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    padding-top:2px;
+    min-width:16px;
+  }
+  .draft-item .di-text{
+    flex:1;
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .draft-item .di-scale{
+    font-size:10.5px;
+    color:var(--ink-soft);
+    margin-top:3px;
+  }
+  .draft-item-actions{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .icon-btn{
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    color:var(--ink-soft);
+    font-size:13px;
+    padding:1px 4px;
+    line-height:1;
+    border-radius:2px;
+  }
+  .icon-btn:hover{color:var(--teal-deep); background:var(--paper);}
+  .icon-btn.remove:hover{color:#a13e3e;}
+
+  .drawer-footer{
+    border-top:1px solid var(--line);
+    padding:14px 22px 20px;
+    background:var(--paper-deep);
+  }
+  .export-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    flex:1 1 auto;
+    min-width:110px;
+    padding:10px 10px;
+    border-radius:var(--radius);
+    border:1px solid var(--teal-deep);
+    background:var(--teal-deep);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .btn:hover{background:var(--teal);}
+  .btn.secondary{
+    background:var(--card);
+    color:var(--teal-deep);
+  }
+  .btn.secondary:hover{background:var(--paper);}
+  .btn:disabled{
+    opacity:0.45;
+    cursor:not-allowed;
+  }
+  .draft-toast{
+    font-size:11.5px;
+    color:var(--teal-deep);
+    text-align:center;
+    height:14px;
+    margin-top:6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="topbar">
+    <div class="title-row">
+      <div class="eyebrow">SIMLAB &nbsp;·&nbsp; MASTER SURVEY QUESTION BANK</div>
+      <h1>Build a survey draft</h1>
+    </div>
+    <div class="crumb-search-row">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Jump to a question or construct…">
+        <span class="sx" id="searchClear">clear</span>
+      </div>
+    </div>
+  </div>
+
+  <main id="mainContent"></main>
+
+  <button class="selected-fab" id="fabOpen">
+    Selected questions <span class="badge" id="fabCount">0</span>
+  </button>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <h2>Your draft</h2>
+      <p>Selected items, in the order they'll appear. Use the arrows to reorder.</p>
+    </div>
+    <button class="drawer-close" id="drawerClose">&#10005;</button>
+  </div>
+  <div class="draft-name-row">
+    <input type="text" id="surveyTitle" value="Untitled Survey Draft" placeholder="Survey title…">
+  </div>
+  <div class="draft-list" id="draftList"></div>
+  <div class="drawer-footer">
+    <div class="export-row">
+      <button class="btn secondary" id="copyBtn" disabled>Copy text</button>
+      <button class="btn" id="pdfBtn" disabled>Download PDF</button>
+      <button class="btn" id="wordBtn" disabled>Download Word</button>
+    </div>
+    <button class="btn secondary" id="clearDraftBtn" style="width:100%;" disabled>Clear draft</button>
+    <div class="draft-toast" id="toast"></div>
+  </div>
+</aside>
+
+<script id="questionData" type="application/json">
+[{"id":1,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your age?","scale":"Open-ended (years)","type":"Open-Ended","instrument":"ICTR / CTSA Standard Demographics","notes":"Use standard ICTR battery"},{"id":2,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your gender identity? (Man / Woman / Non-binary / Prefer to self-describe / Prefer not to say)","scale":"Single-select","type":"Single-Select","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":3,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your race/ethnicity? (Select all that apply)","scale":"Multi-select","type":"Multi-Select","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":4,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your primary degree? (MD / PhD / MD-PhD / PharmD / Other)","scale":"Single-select","type":"Single-Select","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":5,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your current career stage? (Postdoc / Instructor / Asst. Prof / Assoc. Prof / Full Prof / Other)","scale":"Single-select","type":"Single-Select","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":6,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"What is your primary department or unit?","scale":"Open-ended","type":"Open-Ended","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":7,"category":"A. Participant Background & Context","subcategory":"Demographics","question":"How many years have you been conducting research? (< 1 / 1\u20133 / 4\u20136 / 7\u201310 / > 10)","scale":"Single-select","type":"Single-Select","instrument":"ICTR / CTSA Standard Demographics","notes":""},{"id":8,"category":"A. Participant Background & Context","subcategory":"Program Participation","question":"Which of the following partner programs have you participated in? (Select all that apply)","scale":"Multi-select","type":"Multi-Select","instrument":"N/A","notes":"N/A"},{"id":9,"category":"A. Participant Background & Context","subcategory":"Context for Engagement","question":"I am engaging in this simulation as part of: (Select all that apply: KL2 program / TL1 / team science meeting / personal development / other)","scale":"Multi-select","type":"Multi-Select","instrument":"N/A","notes":"N/A"},{"id":10,"category":"A. Participant Background & Context","subcategory":"Prior Simulation Experience","question":"How many times have you participated in a simulation-based learning activity? (None / 1\u20132 / 3\u20135 / 6\u201310 / > 10)","scale":"Single-select","type":"Single-Select","instrument":"N/A","notes":""},{"id":11,"category":"A. Participant Background & Context","subcategory":"Prior Simulation Experience","question":"Prior to today, how familiar were you with SimLab's simulation methodology? (1=Not at all \u2192 5=Extremely familiar)","scale":"5-pt Likert","type":"Likert Scale","instrument":"N/A","notes":""},{"id":12,"category":"A. Participant Background & Context","subcategory":"Prior AI Tool Experience","question":"How often do you use AI tools (e.g., ChatGPT, Copilot) in your professional work? (Never / Rarely / Sometimes / Often / Very often)","scale":"Single-select","type":"Single-Select","instrument":"N/A","notes":"NEW \u2013 AI transition context"},{"id":13,"category":"A. Participant Background & Context","subcategory":"Prior AI Tool Experience","question":"How comfortable are you interacting with AI-driven conversational systems? (1=Very uncomfortable \u2192 5=Very comfortable)","scale":"5-pt Likert","type":"Likert Scale","instrument":"N/A","notes":"NEW \u2013 AI transition context"},{"id":14,"category":"A. Participant Background & Context","subcategory":"Attitudes Toward AI in Education","question":"I believe AI can be an effective tool for educational simulations.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Adapted from AI Attitudes in Higher Education Scale (Scharping et al., 2025)","notes":"NEW \u2013 AI transition context"},{"id":15,"category":"A. Participant Background & Context","subcategory":"Attitudes Toward AI in Education","question":"I am concerned about the use of AI to replace human interaction in training programs.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Adapted from AI Attitudes in Higher Education Scale (Scharping et al., 2025)","notes":"NEW \u2013 reverse scored"},{"id":18,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"I try to look at everybody's side of a disagreement before I make a decision.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 1 of 7"},{"id":19,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"When I'm upset at someone, I usually try to 'put myself in his/her shoes' for a while.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 2 of 7"},{"id":20,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"I sometimes try to understand my friends better by imagining how things look from their perspective.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 3 of 7"},{"id":21,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"Before criticizing somebody, I try to imagine how I would feel if I were in their place.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 4 of 7"},{"id":22,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"If I'm sure I'm right about something, I don't waste much time listening to other people's arguments. [R]","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 5 of 7 \u2013 REVERSE SCORED"},{"id":23,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"I believe that there are two sides to every question and try to look at them both.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 6 of 7"},{"id":24,"category":"B. Participant Learning Outcomes","subcategory":"Perspective-Taking (IRI-PT)","question":"I sometimes find it difficult to see things from the 'other guy's' point of view. [R]","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 PT Subscale (Davis, 1983)","notes":"IRI-PT Item 7 of 7 \u2013 REVERSE SCORED"},{"id":25,"category":"B. Participant Learning Outcomes","subcategory":"Empathic Concern (IRI-EC)","question":"I often have tender, concerned feelings for people less fortunate than me.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 EC Subscale (Davis, 1983)","notes":"IRI-EC Item"},{"id":26,"category":"B. Participant Learning Outcomes","subcategory":"Empathic Concern (IRI-EC)","question":"When I see someone being taken advantage of, I feel kind of protective toward them.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 EC Subscale (Davis, 1983)","notes":"IRI-EC Item"},{"id":27,"category":"B. Participant Learning Outcomes","subcategory":"Empathic Concern (IRI-EC)","question":"I would describe myself as a pretty soft-hearted person.","scale":"5-pt Likert (0=Does not describe me well \u2192 4=Describes me very well)","type":"Likert Scale","instrument":"Interpersonal Reactivity Index \u2013 EC Subscale (Davis, 1983)","notes":"IRI-EC Item"},{"id":28,"category":"B. Participant Learning Outcomes","subcategory":"Team Communication (TCS)","question":"In our team, we communicate in a timely manner.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Communication Scale \u2013 FC1 (Hartner-Tiefenthaler et al., 2022)","notes":"Focused Communication subscale"},{"id":29,"category":"B. Participant Learning Outcomes","subcategory":"Team Communication (TCS)","question":"In our team, we communicate exactly and precisely.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Communication Scale \u2013 FC2 (Hartner-Tiefenthaler et al., 2022)","notes":"Focused Communication subscale"},{"id":30,"category":"B. Participant Learning Outcomes","subcategory":"Team Communication (TCS)","question":"In our team, we keep each other posted on relevant information.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Communication Scale \u2013 KS1 (Hartner-Tiefenthaler et al., 2022)","notes":"Knowledge Sharing subscale"},{"id":31,"category":"B. Participant Learning Outcomes","subcategory":"Team Communication (TCS)","question":"In our team, we know about the work of other team members.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Communication Scale \u2013 KS2 (Hartner-Tiefenthaler et al., 2022)","notes":"Knowledge Sharing subscale"},{"id":32,"category":"B. Participant Learning Outcomes","subcategory":"Team Communication (TCS)","question":"In our team, we know the expertise of other team members.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Communication Scale \u2013 KS3 (Hartner-Tiefenthaler et al., 2022)","notes":"Knowledge Sharing subscale"},{"id":33,"category":"B. Participant Learning Outcomes","subcategory":"Active Listening (AELS)","question":"I am aware of what other team members are trying to communicate to me.","scale":"5-pt Likert (1=Not at all like me \u2192 5=Very much like me)","type":"Likert Scale","instrument":"Active-Empathic Listening Scale \u2013 Sensing (Bodie, 2011)","notes":"AELS Sensing subscale"},{"id":34,"category":"B. Participant Learning Outcomes","subcategory":"Active Listening (AELS)","question":"I listen carefully to what others on my team say to me.","scale":"5-pt Likert (1=Not at all like me \u2192 5=Very much like me)","type":"Likert Scale","instrument":"Active-Empathic Listening Scale \u2013 Sensing (Bodie, 2011)","notes":"AELS Sensing subscale"},{"id":35,"category":"B. Participant Learning Outcomes","subcategory":"Active Listening (AELS)","question":"I think about what I will say next while someone is talking rather than listening to what is being said. [R]","scale":"5-pt Likert (1=Not at all like me \u2192 5=Very much like me)","type":"Likert Scale","instrument":"Active-Empathic Listening Scale \u2013 Processing (Bodie, 2011)","notes":"AELS Processing \u2013 REVERSE SCORED"},{"id":36,"category":"B. Participant Learning Outcomes","subcategory":"Active Listening (AELS)","question":"I assure others I can empathize with what they are going through.","scale":"5-pt Likert (1=Not at all like me \u2192 5=Very much like me)","type":"Likert Scale","instrument":"Active-Empathic Listening Scale \u2013 Responding (Bodie, 2011)","notes":"AELS Responding subscale"},{"id":37,"category":"B. Participant Learning Outcomes","subcategory":"Leadership Self-Efficacy","question":"I am confident I can lead a research team to reach its goals.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Leadership/Teamwork Self-Efficacy Scale (Chemers et al., 2011)","notes":"LTSES item"},{"id":38,"category":"B. Participant Learning Outcomes","subcategory":"Leadership Self-Efficacy","question":"I can motivate group members to accomplish a biomedical research project","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Kane\u2013Baltes Leadership Self-Efficacy Survey (Kane & Baltes, 2000)","notes":"\u03b1 = 0.88\u20130.95"},{"id":39,"category":"B. Participant Learning Outcomes","subcategory":"Leadership Self-Efficacy","question":"I am confident I can manage conflicts that arise within my research team.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Kane\u2013Baltes Leadership Self-Efficacy Survey (Kane & Baltes, 2000)","notes":""},{"id":40,"category":"B. Participant Learning Outcomes","subcategory":"Leadership Self-Efficacy","question":"I feel capable of setting clear goals and expectations for my team.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Kane\u2013Baltes Leadership Self-Efficacy Survey (Kane & Baltes, 2000)","notes":""},{"id":41,"category":"B. Participant Learning Outcomes","subcategory":"Team Collaboration","question":"Our team has a shared understanding of our research goals.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Interdisciplinary Collaboration Process Scale \u2013 Goal Clarity (Bennett & Gadlin, 2012)","notes":"Goal clarity item"},{"id":42,"category":"B. Participant Learning Outcomes","subcategory":"Team Collaboration","question":"Each team member understands their role and responsibilities.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Interdisciplinary Collaboration Process Scale \u2013 Role Clarity (Bennett & Gadlin, 2012)","notes":"Role clarity item"},{"id":43,"category":"B. Participant Learning Outcomes","subcategory":"Team Collaboration","question":"Our team has clear processes for how we work together and make decisions.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Interdisciplinary Collaboration Process Scale \u2013 Process Clarity (Bennett & Gadlin, 2012)","notes":"Process clarity item"},{"id":44,"category":"B. Participant Learning Outcomes","subcategory":"Team Collaboration","question":"I am motivated to collaborate with researchers from disciplines different from my own.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"MATRICx \u2013 Motivation for Team Readiness (Tetroe et al., 2021)","notes":"MATRICx cooperation dimension"},{"id":45,"category":"B. Participant Learning Outcomes","subcategory":"Intended Behavior Change","question":"How do you intend to apply what you learned from this simulation in your research practice? (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":""},{"id":46,"category":"B. Participant Learning Outcomes","subcategory":"Actual Behavior Change (Follow-up)","question":"Since participating in the SimLab simulation, how specifically have you changed your teamwork practices? (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":"Follow-up survey only"},{"id":47,"category":"B. Participant Learning Outcomes","subcategory":"Knowledge Retention (Follow-up)","question":"Which concepts or skills from the simulation do you still apply in your work? (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":"Follow-up survey only"},{"id":48,"category":"C. Simulation Validity & Fidelity","subcategory":"Content Validity - Scenario Accuracy","question":"The scenario presented realistic situations that I encounter in my actual work.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Realism Scale (SRS) \u2013 adapted (Morgado et al., 2025)","notes":"SRS adapted item"},{"id":49,"category":"C. Simulation Validity & Fidelity","subcategory":"Content Validity - Scenario Accuracy","question":"The team dynamics portrayed in the simulation matched the dynamics I experience in real research settings.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Realism Scale (SRS) \u2013 adapted (Morgado et al., 2025)","notes":"SRS adapted item"},{"id":50,"category":"C. Simulation Validity & Fidelity","subcategory":"Content Validity - Scenario Accuracy","question":"The problems presented in the simulation are the kind of problems I face when leading a research team.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":51,"category":"C. Simulation Validity & Fidelity","subcategory":"Construct Validity - Behaviors Elicited","question":"The simulation gave me sufficient opportunity to demonstrate my perspective-taking skills.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Observer + self-report version possible"},{"id":52,"category":"C. Simulation Validity & Fidelity","subcategory":"Construct Validity - Behaviors Elicited","question":"The simulation gave me sufficient opportunity to demonstrate my communication skills.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":53,"category":"C. Simulation Validity & Fidelity","subcategory":"Psychological Fidelity","question":"I felt emotionally engaged in the simulation as if the situation were real.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Psychological Fidelity Questionnaire (Beaubien & Baker, 2004)","notes":""},{"id":54,"category":"C. Simulation Validity & Fidelity","subcategory":"Psychological Fidelity","question":"The characters in the simulation behaved in ways that felt authentic and believable.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Realism Scale (SRS) \u2013 adapted (Morgado et al., 2025)","notes":""},{"id":55,"category":"C. Simulation Validity & Fidelity","subcategory":"Scoring Rubric Reliability","question":"The scoring criteria used to evaluate participant performance are clear and well-defined. (Rater/facilitator item)","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Examining Validity, Fidelity & Reliability of Simulation (Hayden et al., 2014)","notes":"Facilitator-facing item"},{"id":56,"category":"C. Simulation Validity & Fidelity","subcategory":"Scoring Rubric Reliability","question":"I was able to apply the scoring rubric consistently across different participants. (Rater/facilitator item)","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Examining Validity, Fidelity & Reliability of Simulation (Hayden et al., 2014)","notes":"Facilitator-facing item; ICC recommended for inter-rater reliability"},{"id":57,"category":"D. AI vs. Human Actor Comparison","subcategory":"Perceived Naturalness","question":"The AI actor's responses felt natural and conversational.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Godspeed Questionnaire Series \u2013 Animacy subscale (Bartneck et al., 2009)","notes":"Godspeed Animacy \u2013 adapted for AI actor"},{"id":58,"category":"D. AI vs. Human Actor Comparison","subcategory":"Perceived Naturalness","question":"The AI actor responded to what I said in a way that felt relevant and contextually appropriate.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Godspeed Questionnaire Series \u2013 Animacy subscale (Bartneck et al., 2009)","notes":""},{"id":59,"category":"D. AI vs. Human Actor Comparison","subcategory":"Perceived Naturalness","question":"Interacting with the AI actor felt [Mechanical \u2014 Natural] (semantic differential, 1\u20135)","scale":"5-pt Semantic Differential","type":"Semantic Differential","instrument":"Godspeed Questionnaire Series \u2013 Anthropomorphism subscale (Bartneck et al., 2009)","notes":"Semantic differential format"},{"id":60,"category":"D. AI vs. Human Actor Comparison","subcategory":"Emotional Authenticity & Warmth","question":"The AI actor seemed to genuinely understand my perspective.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Godspeed Questionnaire Series \u2013 Likeability subscale (Bartneck et al., 2009)","notes":"Adapted from Likeability subscale"},{"id":61,"category":"D. AI vs. Human Actor Comparison","subcategory":"Emotional Authenticity & Warmth","question":"Interacting with the AI actor felt [Unfriendly \u2014 Friendly] (semantic differential, 1\u20135)","scale":"5-pt Semantic Differential","type":"Semantic Differential","instrument":"Godspeed Questionnaire Series \u2013 Likeability subscale (Bartneck et al., 2009)","notes":""},{"id":62,"category":"D. AI vs. Human Actor Comparison","subcategory":"Responsiveness & Adaptability","question":"The AI actor adapted its responses based on the direction of our conversation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Godspeed Questionnaire Series \u2013 Perceived Intelligence (Bartneck et al., 2009)","notes":"Perceived Intelligence \u2013 adapted"},{"id":63,"category":"D. AI vs. Human Actor Comparison","subcategory":"Responsiveness & Adaptability","question":"The AI actor seemed [Incompetent \u2014 Competent] in managing the simulation scenario. (semantic differential, 1\u20135)","scale":"5-pt Semantic Differential","type":"Semantic Differential","instrument":"Godspeed Questionnaire Series \u2013 Perceived Intelligence (Bartneck et al., 2009)","notes":""},{"id":64,"category":"D. AI vs. Human Actor Comparison","subcategory":"Comparative Preference","question":"Overall, I found interacting with the AI actor to be comparable to interacting with a human actor.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Adapted from robot vs. human actor comparison study (Zink et al., 2021)","notes":"KEY AI-transition item"},{"id":65,"category":"D. AI vs. Human Actor Comparison","subcategory":"Comparative Preference","question":"I would prefer to participate in future simulations using an AI actor rather than a human actor.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY AI-transition item"},{"id":66,"category":"D. AI vs. Human Actor Comparison","subcategory":"Comparative Preference","question":"I felt more comfortable expressing myself with the AI actor than I would with a human actor. (lowered inhibition)","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Measures 'lowered inhibition' effect"},{"id":67,"category":"D. AI vs. Human Actor Comparison","subcategory":"Learning Outcome Equivalence","question":"I learned as much from this simulation with an AI actor as I would have with a human actor.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY equivalence item"},{"id":68,"category":"D. AI vs. Human Actor Comparison","subcategory":"Perceived Fairness & Consistency","question":"The AI actor treated all participants in the simulation consistently and fairly.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":69,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I think that I would like to use this system frequently.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 1 (Brooke, 1996)","notes":"SUS Item 1 \u2013 do NOT change wording"},{"id":70,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I found the system unnecessarily complex. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 2 (Brooke, 1996)","notes":"SUS Item 2 \u2013 REVERSE SCORED"},{"id":71,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I thought the system was easy to use.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 3 (Brooke, 1996)","notes":"SUS Item 3"},{"id":72,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I think that I would need the support of a technical person to be able to use this system. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 4 (Brooke, 1996)","notes":"SUS Item 4 \u2013 REVERSE SCORED"},{"id":73,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I found the various functions in this system were well integrated.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 5 (Brooke, 1996)","notes":"SUS Item 5"},{"id":74,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I thought there was too much inconsistency in this system. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 6 (Brooke, 1996)","notes":"SUS Item 6 \u2013 REVERSE SCORED"},{"id":75,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I would imagine that most people would learn to use this system very quickly.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 7 (Brooke, 1996)","notes":"SUS Item 7"},{"id":76,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I found the system very cumbersome to use. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 8 (Brooke, 1996)","notes":"SUS Item 8 \u2013 REVERSE SCORED"},{"id":77,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I felt very confident using the system.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 9 (Brooke, 1996)","notes":"SUS Item 9"},{"id":78,"category":"E. Technology Usability & UX","subcategory":"Ease of Use (SUS)","question":"I needed to learn a lot of things before I could get going with this system. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"System Usability Scale \u2013 Item 10 (Brooke, 1996)","notes":"SUS Item 10 \u2013 REVERSE SCORED"},{"id":79,"category":"E. Technology Usability & UX","subcategory":"Audio / Visual Quality","question":"The audio quality during the simulation was clear and easy to understand.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":80,"category":"E. Technology Usability & UX","subcategory":"Audio / Visual Quality","question":"The visual quality (video, interface, avatars) during the simulation was adequate.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":81,"category":"E. Technology Usability & UX","subcategory":"Technical Performance","question":"I experienced technical problems (lag, glitches, errors) during the simulation.","scale":"5-pt Likert (1=Never \u2192 5=Constantly)","type":"Likert Scale","instrument":"N/A","notes":"Lower = better"},{"id":82,"category":"E. Technology Usability & UX","subcategory":"Technical Performance","question":"If you experienced technical problems, please describe them: (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":""},{"id":83,"category":"E. Technology Usability & UX","subcategory":"Setup & Onboarding","question":"The instructions and onboarding materials were sufficient to prepare me for the simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":84,"category":"E. Technology Usability & UX","subcategory":"Accessibility","question":"The technology used in this simulation was accessible given my device and connectivity.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":85,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Trust in AI System","question":"I believe the AI system in this simulation behaved reliably.","scale":"7-pt Likert (1=Strongly Disagree \u2192 7=Strongly Agree)","type":"Likert Scale","instrument":"Trust in Automation Scale (TIAS) \u2013 adapted (Jian et al., 2000)","notes":"TIAS adapted item \u2013 use 7-pt scale as in original"},{"id":86,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Trust in AI System","question":"I am suspicious of the AI system's intentions. [R]","scale":"7-pt Likert (1=Strongly Disagree \u2192 7=Strongly Agree)","type":"Likert Scale","instrument":"Trust in Automation Scale (TIAS) \u2013 adapted (Jian et al., 2000)","notes":"TIAS \u2013 REVERSE SCORED"},{"id":87,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Trust in AI System","question":"I can rely on the AI system to respond consistently across different simulation participants.","scale":"7-pt Likert (1=Strongly Disagree \u2192 7=Strongly Agree)","type":"Likert Scale","instrument":"Trust in Automation Scale (TIAS) \u2013 adapted (Jian et al., 2000)","notes":""},{"id":88,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"AI Transparency & Explainability","question":"I understood how the AI actor in the simulation was making its decisions.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"AI transparency item"},{"id":89,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"AI Transparency & Explainability","question":"I felt I had a clear understanding of what the AI could and could not do in this simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":90,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Data Privacy Comfort","question":"I am comfortable with the way my data and interactions were handled during this simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Particularly relevant for AI-recorded sims"},{"id":91,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Data Privacy Comfort","question":"I felt my conversations with the AI actor were private and would not be shared inappropriately.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":92,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Perceived Bias in AI Behavior","question":"The AI actor seemed to treat all participants the same regardless of background or communication style.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":93,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Perceived Bias in AI Behavior","question":"I noticed moments when the AI actor's behavior seemed biased or unfair. (Open-ended if yes)","scale":"Yes/No + Open-ended","type":"Open-Ended","instrument":"N/A","notes":""},{"id":94,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Comfort Disclosing to AI","question":"I was willing to speak openly and honestly with the AI actor during the simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Measures AI disclosure comfort vs. human"},{"id":95,"category":"F. Ethical, Trust & Safety (AI-specific)","subcategory":"Feeling Surveilled / Judged","question":"I felt like I was being evaluated or judged by the AI system during the simulation. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"High scores indicate discomfort \u2013 REVERSE SCORED"},{"id":96,"category":"G. Simulation Experience Quality","subcategory":"Overall Satisfaction","question":"Overall, I was satisfied with the simulation experience.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Effectiveness Tool \u2013 Modified (SET-M) (Leighton et al., 2015)","notes":"SET-M \u03b1 = .936"},{"id":97,"category":"G. Simulation Experience Quality","subcategory":"Overall Satisfaction","question":"The simulation experience met my learning expectations.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Effectiveness Tool \u2013 Modified (SET-M) (Leighton et al., 2015)","notes":"SET-M item"},{"id":98,"category":"G. Simulation Experience Quality","subcategory":"Overall Satisfaction","question":"I would recommend this simulation experience to colleagues.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":99,"category":"G. Simulation Experience Quality","subcategory":"Engagement & Immersion","question":"I was actively engaged throughout the simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"SET-M \u2013 Engagement (Leighton et al., 2015)","notes":"SET-M item"},{"id":100,"category":"G. Simulation Experience Quality","subcategory":"Engagement & Immersion","question":"The simulation held my attention from beginning to end.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":101,"category":"G. Simulation Experience Quality","subcategory":"Engagement & Immersion","question":"The simulation activities were relevant to my real-world research responsibilities.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":102,"category":"G. Simulation Experience Quality","subcategory":"Psychological Safety","question":"If you make a mistake during this simulation, it is held against you. [R]","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Psychological Safety Scale (Edmondson, 1999)","notes":"Edmondson Item 1 \u2013 REVERSE SCORED"},{"id":103,"category":"G. Simulation Experience Quality","subcategory":"Psychological Safety","question":"It is easy to speak up and take risks in this simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Psychological Safety Scale (Edmondson, 1999)","notes":"Adapted from Edmondson item"},{"id":104,"category":"G. Simulation Experience Quality","subcategory":"Psychological Safety","question":"I felt safe to try new approaches and make mistakes during this simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Team Psychological Safety Scale (Edmondson, 1999)","notes":"Adapted from Edmondson item"},{"id":105,"category":"G. Simulation Experience Quality","subcategory":"Stress & Cognitive Load","question":"How mentally demanding was the simulation task? (1=Very Low \u2192 100=Very High)","scale":"20-step scale (0\u2013100)","type":"Numeric Scale (0\u2013100)","instrument":"NASA Task Load Index \u2013 Mental Demand (Hart & Staveland, 1988)","notes":"NASA-TLX Mental Demand dimension"},{"id":106,"category":"G. Simulation Experience Quality","subcategory":"Stress & Cognitive Load","question":"How much effort did you put into the simulation? (1=Very Low \u2192 100=Very High)","scale":"20-step scale (0\u2013100)","type":"Numeric Scale (0\u2013100)","instrument":"NASA Task Load Index \u2013 Effort (Hart & Staveland, 1988)","notes":"NASA-TLX Effort dimension"},{"id":107,"category":"G. Simulation Experience Quality","subcategory":"Stress & Cognitive Load","question":"How frustrated, stressed, irritated, or annoyed did you feel during the simulation? (1=Very Low \u2192 100=Very High)","scale":"20-step scale (0\u2013100)","type":"Numeric Scale (0\u2013100)","instrument":"NASA Task Load Index \u2013 Frustration (Hart & Staveland, 1988)","notes":"NASA-TLX Frustration dimension"},{"id":108,"category":"G. Simulation Experience Quality","subcategory":"Enjoyment & Motivation","question":"I enjoyed participating in this simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":109,"category":"G. Simulation Experience Quality","subcategory":"Enjoyment & Motivation","question":"I would be motivated to participate in another SimLab simulation in the future.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":110,"category":"G. Simulation Experience Quality","subcategory":"Opportunities for Improvement","question":"What aspects of the simulation could be improved? (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":""},{"id":111,"category":"G. Simulation Experience Quality","subcategory":"Opportunities for Improvement","question":"Were there any technical or logistical issues that interfered with your experience? If yes, describe.","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":""},{"id":112,"category":"H. Debriefing & Facilitation Quality","subcategory":"Debrief Effectiveness","question":"The debriefing session helped me understand my strengths and areas for growth.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Effectiveness Tool \u2013 Modified, Debriefing subscale (Leighton et al., 2015)","notes":"SET-M debriefing item"},{"id":113,"category":"H. Debriefing & Facilitation Quality","subcategory":"Debrief Effectiveness","question":"The debrief gave me the opportunity to reflect on my performance during the simulation.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Simulation Effectiveness Tool \u2013 Modified, Debriefing subscale (Leighton et al., 2015)","notes":"SET-M debriefing item"},{"id":114,"category":"H. Debriefing & Facilitation Quality","subcategory":"Debrief Effectiveness","question":"The debrief facilitated meaningful discussion about the simulation learning objectives.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":115,"category":"H. Debriefing & Facilitation Quality","subcategory":"Facilitator / AI Feedback Quality","question":"The feedback I received (from facilitator or AI system) was specific and actionable.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Covers both human facilitator and AI-generated feedback"},{"id":116,"category":"H. Debriefing & Facilitation Quality","subcategory":"Facilitator / AI Feedback Quality","question":"The feedback I received was timely \u2014 I received it when it was most useful.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":117,"category":"H. Debriefing & Facilitation Quality","subcategory":"Facilitator / AI Feedback Quality","question":"The feedback from the AI system (if applicable) was as helpful as feedback from a human facilitator.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY AI-transition equivalence item"},{"id":118,"category":"H. Debriefing & Facilitation Quality","subcategory":"Reflective Learning","question":"As a result of this simulation and debrief, I have identified specific behaviors I want to change.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"Reflective practice framework \u2013 adapted (Sch\u00f6n, 1983)","notes":"Adapted Sch\u00f6n reflective practice"},{"id":119,"category":"H. Debriefing & Facilitation Quality","subcategory":"Reflective Learning","question":"The simulation made me more aware of assumptions and biases I bring to team interactions.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":120,"category":"I. Program Implementation & Logistics","subcategory":"Ease of Scheduling & Access","question":"Scheduling and accessing the simulation was straightforward.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Participant-facing"},{"id":121,"category":"I. Program Implementation & Logistics","subcategory":"Ease of Scheduling & Access","question":"The time required to participate in the simulation was reasonable.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":122,"category":"I. Program Implementation & Logistics","subcategory":"Facilitator Workload","question":"Running this simulation required a manageable amount of facilitator time and effort. (Facilitator item)","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Facilitator-facing"},{"id":123,"category":"I. Program Implementation & Logistics","subcategory":"Facilitator Workload","question":"The AI system (if used) reduced the workload required to facilitate the simulation. (Facilitator item)","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY AI-transition item \u2013 facilitator-facing"},{"id":124,"category":"I. Program Implementation & Logistics","subcategory":"Scalability","question":"This simulation could be scaled to accommodate many more participants without loss of quality.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"Can be participant or facilitator-facing"},{"id":125,"category":"I. Program Implementation & Logistics","subcategory":"Scalability","question":"Using an AI simulation (rather than human actors) would make this program more scalable.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY AI-transition item"},{"id":126,"category":"I. Program Implementation & Logistics","subcategory":"Integration with Existing Programs","question":"This simulation fits well within my existing ICTR/KL2 program requirements.","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":""},{"id":127,"category":"I. Program Implementation & Logistics","subcategory":"Readiness to Adopt AI Simulation","question":"I would feel comfortable participating in a fully AI-driven simulation (no human facilitator).","scale":"5-pt Likert (1=Strongly Disagree \u2192 5=Strongly Agree)","type":"Likert Scale","instrument":"N/A","notes":"KEY AI adoption readiness item"},{"id":128,"category":"I. Program Implementation & Logistics","subcategory":"Readiness to Adopt AI Simulation","question":"What concerns, if any, do you have about AI replacing human actors or facilitators in SimLab? (Open-ended)","scale":"Open-ended text","type":"Open-Ended","instrument":"N/A","notes":"KEY qualitative AI-transition item"}]
+
+</script>
+
+<script>
+const QUESTIONS = JSON.parse(document.getElementById('questionData').textContent);
+
+const CAT_STYLE = { 'A':'a','B':'b','C':'c','D':'d','E':'e','F':'f','G':'g','H':'h','I':'i' };
+function catLetter(cat){ return cat.split('.')[0].trim(); }
+function catShort(cat){ return cat.replace(/^[A-Z]\.\s*/, ''); }
+function escapeHtml(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Ordered unique categories & subcategories as they appear in the data
+const categories = [...new Set(QUESTIONS.map(q=>q.category))];
+const subcatsByCat = {};
+categories.forEach(cat=>{
+  subcatsByCat[cat] = [...new Set(QUESTIONS.filter(q=>q.category===cat).map(q=>q.subcategory))];
+});
+
+let state = {
+  view: 'home',          // 'home' | 'subcats' | 'questions' | 'search'
+  majorCat: null,
+  subCat: null,
+  activeTypes: new Set(),
+  search: '',
+  selectedIds: []
+};
+
+// ============ NAVIGATION ============
+function goHome(){
+  state.view='home'; state.majorCat=null; state.subCat=null; state.search='';
+  document.getElementById('searchInput').value='';
+  render();
+}
+function goMajor(cat){
+  state.view='subcats'; state.majorCat=cat; state.subCat=null; state.activeTypes=new Set();
+  state.search=''; document.getElementById('searchInput').value='';
+  render();
+}
+function goSub(cat, sub){
+  state.view='questions'; state.majorCat=cat; state.subCat=sub; state.activeTypes=new Set();
+  state.search=''; document.getElementById('searchInput').value='';
+  render();
+  window.scrollTo({top:0});
+}
+
+// ============ BREADCRUMB ============
+function renderBreadcrumb(){
+  const el = document.getElementById('breadcrumb');
+  el.innerHTML = '';
+  const parts = [];
+
+  parts.push(`<span class="crumb-link" data-nav="home">Home</span>`);
+
+  if(state.view === 'search'){
+    parts.push(`<span class="crumb-sep">›</span><span class="crumb-current">Search results</span>`);
+  } else if(state.majorCat){
+    parts.push(`<span class="crumb-sep">›</span>`);
+    if(state.view === 'subcats'){
+      parts.push(`<span class="crumb-current">${escapeHtml(catLetter(state.majorCat))}. ${escapeHtml(catShort(state.majorCat))}</span>`);
+    } else {
+      parts.push(`<span class="crumb-link" data-nav="major">${escapeHtml(catLetter(state.majorCat))}. ${escapeHtml(catShort(state.majorCat))}</span>`);
+    }
+    if(state.subCat){
+      parts.push(`<span class="crumb-sep">›</span><span class="crumb-current">${escapeHtml(state.subCat)}</span>`);
+    }
+  }
+  el.innerHTML = parts.join('');
+  el.querySelectorAll('[data-nav="home"]').forEach(e=>e.onclick=goHome);
+  el.querySelectorAll('[data-nav="major"]').forEach(e=>e.onclick=()=>goMajor(state.majorCat));
+}
+
+// ============ VIEWS ============
+function renderHome(){
+  let html = `<p class="section-intro">Start by choosing the major category of question you need. Each category groups a set of smaller constructs — you'll pick one of those next, then the individual questions inside it.</p>`;
+  html += `<div class="card-grid">`;
+  categories.forEach(cat=>{
+    const letter = catLetter(cat);
+    const style = CAT_STYLE[letter] || 'a';
+    const items = QUESTIONS.filter(q=>q.category===cat);
+    const nSub = subcatsByCat[cat].length;
+    const typesInCat = [...new Set(items.map(q=>q.type))].slice(0,3);
+    html += `
+      <button class="pick-card" data-cat="${escapeHtml(cat)}">
+        <div class="letter-badge" style="background:var(--tag-${style});">${letter}</div>
+        <div class="pc-title">${escapeHtml(catShort(cat))}</div>
+        <div class="pc-types">${typesInCat.map(t=>`<span class="mini-tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </button>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById('mainContent').innerHTML = html;
+  document.querySelectorAll('.pick-card[data-cat]').forEach(card=>{
+    card.onclick = ()=>goMajor(card.dataset.cat);
+  });
+}
+
+function renderSubcats(){
+  const cat = state.majorCat;
+  const subs = subcatsByCat[cat];
+  const letter = catLetter(cat);
+  const style = CAT_STYLE[letter] || 'a';
+
+  let html = `<div class="back-row"><span class="back-link" id="backToHome">&larr; All categories</span></div>`;
+  html += `<p class="section-intro">Now pick a construct within <strong>${escapeHtml(catShort(cat))}</strong> to see its questions.</p>`;
+  html += `<div class="card-grid">`;
+  subs.forEach(sub=>{
+    const items = QUESTIONS.filter(q=>q.category===cat && q.subcategory===sub);
+    const typesInSub = [...new Set(items.map(q=>q.type))];
+    html += `
+      <button class="pick-card" data-sub="${escapeHtml(sub)}">
+        <div class="letter-badge" style="background:var(--tag-${style});">${escapeHtml(sub.charAt(0))}</div>
+        <div class="pc-title">${escapeHtml(sub)}</div>
+        <div class="pc-types">${typesInSub.map(t=>`<span class="mini-tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </button>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById('mainContent').innerHTML = html;
+  document.getElementById('backToHome').onclick = goHome;
+  document.querySelectorAll('.pick-card[data-sub]').forEach(card=>{
+    card.onclick = ()=>goSub(cat, card.dataset.sub);
+  });
+}
+
+function renderQuestionList(items, opts){
+  opts = opts || {};
+  const showTypeFilter = opts.showTypeFilter !== false;
+  let html = '';
+
+  if(showTypeFilter){
+    const typesHere = [...new Set(items.map(q=>q.type))];
+    if(typesHere.length > 1){
+      html += `<div class="type-filter-row" id="typeFilterRow">`;
+      typesHere.forEach(t=>{
+        const active = state.activeTypes.has(t) ? ' active' : '';
+        html += `<div class="chip${active}" data-type="${escapeHtml(t)}">${escapeHtml(t)}</div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
+  const filtered = (showTypeFilter && state.activeTypes.size)
+    ? items.filter(q=>state.activeTypes.has(q.type))
+    : items;
+
+  if(filtered.length === 0){
+    html += `<div class="empty-msg">No questions match this filter.</div>`;
+  } else {
+    filtered.forEach(q=>{
+      const style = CAT_STYLE[catLetter(q.category)] || 'a';
+      const isAdded = state.selectedIds.includes(q.id);
+      html += `
+        <div class="q-card">
+          <div class="q-body">
+            <div class="q-meta">
+              <span class="q-num">#${q.id}</span>
+              <span class="tag" style="background:var(--tag-${style}-bg); color:var(--tag-${style});">${escapeHtml(q.subcategory)}</span>
+              <span class="tag" style="background:var(--paper); color:var(--ink-soft); border:1px solid var(--line);">${escapeHtml(q.type)}</span>
+            </div>
+            <p class="q-text">${escapeHtml(q.question)}</p>
+            <div class="q-sub">${escapeHtml(q.scale)}${q.instrument && q.instrument!=='N/A' ? '<span class="dot">·</span><span class="q-instrument">'+escapeHtml(q.instrument)+'</span>' : ''}</div>
+            ${q.notes ? `<div class="q-notes">${escapeHtml(q.notes)}</div>` : ''}
+          </div>
+          <button class="add-btn ${isAdded?'added':''}" data-id="${q.id}">${isAdded ? '✓ Added' : '+ Add'}</button>
+        </div>
+      `;
+    });
+  }
+
+  return html;
+}
+
+function renderQuestions(){
+  const cat = state.majorCat, sub = state.subCat;
+  const items = QUESTIONS.filter(q=>q.category===cat && q.subcategory===sub);
+
+  let html = `<div class="back-row"><span class="back-link" id="backToSubs">&larr; ${escapeHtml(catShort(cat))}</span></div>`;
+  html += `<p class="section-intro"><strong>${escapeHtml(sub)}</strong>. Filter by response type if you only need one format, then add what you want.</p>`;
+  html += renderQuestionList(items);
+
+  document.getElementById('mainContent').innerHTML = html;
+  document.getElementById('backToSubs').onclick = ()=>goMajor(cat);
+  wireTypeFilter(items, renderQuestions);
+  wireAddButtons();
+}
+
+function renderSearch(){
+  const q = state.search.trim().toLowerCase();
+  const matches = QUESTIONS.filter(item=>{
+    const hay = (item.question+' '+item.subcategory+' '+item.instrument+' '+item.category).toLowerCase();
+    return hay.includes(q);
+  });
+
+  let html = `<div class="back-row"><span class="back-link" id="backToHome2">&larr; All categories</span></div>`;
+  html += `<p class="section-intro">Results for “${escapeHtml(state.search)}” across the full bank.</p>`;
+  html += renderQuestionList(matches);
+
+  document.getElementById('mainContent').innerHTML = html;
+  document.getElementById('backToHome2').onclick = goHome;
+  wireTypeFilter(matches, renderSearch);
+  wireAddButtons();
+}
+
+function wireTypeFilter(items, rerenderFn){
+  const row = document.getElementById('typeFilterRow');
+  if(!row) return;
+  row.querySelectorAll('.chip').forEach(chip=>{
+    chip.onclick = ()=>{
+      const t = chip.dataset.type;
+      if(state.activeTypes.has(t)) state.activeTypes.delete(t);
+      else state.activeTypes.add(t);
+      rerenderFn();
+    };
+  });
+}
+
+function wireAddButtons(){
+  document.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      const id = parseInt(btn.dataset.id);
+      toggleSelect(id);
+      const isAdded = state.selectedIds.includes(id);
+      btn.textContent = isAdded ? '✓ Added' : '+ Add';
+      btn.classList.toggle('added', isAdded);
+    };
+  });
+}
+
+function render(){
+  renderBreadcrumb();
+  if(state.view === 'home') renderHome();
+  else if(state.view === 'subcats') renderSubcats();
+  else if(state.view === 'questions') renderQuestions();
+  else if(state.view === 'search') renderSearch();
+  updateFab();
+}
+
+// ============ SELECTION ============
+function toggleSelect(id){
+  if(state.selectedIds.includes(id)){
+    state.selectedIds = state.selectedIds.filter(x=>x!==id);
+  } else {
+    state.selectedIds.push(id);
+  }
+  renderDraft();
+  updateFab();
+}
+
+function moveItem(id, dir){
+  const idx = state.selectedIds.indexOf(id);
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= state.selectedIds.length) return;
+  [state.selectedIds[idx], state.selectedIds[newIdx]] = [state.selectedIds[newIdx], state.selectedIds[idx]];
+  renderDraft();
+}
+
+function removeItem(id){
+  state.selectedIds = state.selectedIds.filter(x=>x!==id);
+  renderDraft();
+  updateFab();
+  const btn = document.querySelector(`.add-btn[data-id="${id}"]`);
+  if(btn){ btn.textContent='+ Add'; btn.classList.remove('added'); }
+}
+
+function updateFab(){
+  document.getElementById('fabCount').textContent = state.selectedIds.length;
+}
+
+function renderDraft(){
+  const draftList = document.getElementById('draftList');
+  const n = state.selectedIds.length;
+
+  document.getElementById('copyBtn').disabled = (n===0);
+  document.getElementById('pdfBtn').disabled = (n===0);
+  document.getElementById('wordBtn').disabled = (n===0);
+  document.getElementById('clearDraftBtn').disabled = (n===0);
+
+  if(n===0){
+    draftList.innerHTML = '<div class="draft-empty">No questions selected yet.<br>Browse a category, open a construct, and add the questions you want — they\'ll show up here.</div>';
+    return;
+  }
+
+  draftList.innerHTML = '';
+  state.selectedIds.forEach((id, i)=>{
+    const q = QUESTIONS.find(x=>x.id===id);
+    if(!q) return;
+    const item = document.createElement('div');
+    item.className = 'draft-item';
+    item.innerHTML = `
+      <div class="order-n">${i+1}.</div>
+      <div class="di-text">
+        ${escapeHtml(q.question)}
+        <div class="di-scale">${escapeHtml(q.scale)}</div>
+      </div>
+      <div class="draft-item-actions">
+        <button class="icon-btn up" title="Move up">&#9650;</button>
+        <button class="icon-btn down" title="Move down">&#9660;</button>
+        <button class="icon-btn remove" title="Remove">&#10005;</button>
+      </div>
+    `;
+    item.querySelector('.up').onclick = ()=>moveItem(id, -1);
+    item.querySelector('.down').onclick = ()=>moveItem(id, 1);
+    item.querySelector('.remove').onclick = ()=>removeItem(id);
+    draftList.appendChild(item);
+  });
+}
+
+// ============ DRAWER ============
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
+function openDrawer(){ drawer.classList.add('open'); backdrop.classList.add('open'); }
+function closeDrawer(){ drawer.classList.remove('open'); backdrop.classList.remove('open'); }
+document.getElementById('fabOpen').onclick = openDrawer;
+document.getElementById('drawerClose').onclick = closeDrawer;
+backdrop.onclick = closeDrawer;
+
+// ============ SEARCH BOX ============
+let searchDebounce;
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  clearTimeout(searchDebounce);
+  const val = e.target.value;
+  searchDebounce = setTimeout(()=>{
+    state.search = val;
+    if(val.trim().length){
+      state.view = 'search';
+      state.activeTypes = new Set();
+      render();
+    } else if(state.view === 'search'){
+      goHome();
+    }
+  }, 150);
+});
+document.getElementById('searchClear').onclick = ()=>{
+  document.getElementById('searchInput').value='';
+  state.search='';
+  if(state.view==='search') goHome();
+};
+
+// ============ EXPORT ============
+function getSelectedItems(){
+  return state.selectedIds.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+}
+function getSurveyTitle(){
+  return document.getElementById('surveyTitle').value.trim() || 'Untitled Survey Draft';
+}
+
+function buildExportText(){
+  const title = getSurveyTitle();
+  const items = getSelectedItems();
+  let out = title + '\n' + '='.repeat(title.length) + '\n\n';
+  out += `Drafted from the SimLab Master Survey Question Bank · ${items.length} item(s)\n\n`;
+  items.forEach((q, i)=>{
+    out += `${i+1}. ${q.question}\n`;
+    out += `   Response format: ${q.scale}\n`;
+    if(q.instrument && q.instrument !== 'N/A') out += `   Source instrument: ${q.instrument}\n`;
+    if(q.notes) out += `   Note: ${q.notes}\n`;
+    out += `\n`;
+  });
+  return out;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  setTimeout(()=>{ if(t.textContent===msg) t.textContent=''; }, 2400);
+}
+
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  navigator.clipboard.writeText(buildExportText()).then(()=>{
+    showToast('Draft copied to clipboard');
+  }).catch(()=>{
+    showToast('Could not copy — try downloading instead');
+  });
+});
+
+document.getElementById('pdfBtn').addEventListener('click', ()=>{
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'pt', format:'a4' });
+    const items = getSelectedItems();
+    const title = getSurveyTitle();
+    const marginX = 50;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - marginX*2;
+    let y = 64;
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(17);
+    doc.text(title, marginX, y);
+    y += 20;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(110,110,110);
+    doc.text(`Drafted from the SimLab Master Survey Question Bank · ${items.length} item(s)`, marginX, y);
+    doc.setTextColor(20,20,20);
+    y += 26;
+
+    items.forEach((q, i)=>{
+      const qLines = doc.splitTextToSize(`${i+1}. ${q.question}`, maxWidth);
+      const scaleLines = doc.splitTextToSize(`Response format: ${q.scale}`, maxWidth - 14);
+      const instrLines = (q.instrument && q.instrument!=='N/A') ? doc.splitTextToSize(`Source instrument: ${q.instrument}`, maxWidth - 14) : [];
+      const noteLines = q.notes ? doc.splitTextToSize(`Note: ${q.notes}`, maxWidth - 14) : [];
+
+      const blockHeight = 4 + qLines.length*14 + (scaleLines.length + instrLines.length + noteLines.length)*12 + 12;
+      if(y + blockHeight > pageHeight - 50){
+        doc.addPage();
+        y = 56;
+      }
+
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      qLines.forEach(line=>{ doc.text(line, marginX, y); y += 14; });
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(90,90,90);
+      scaleLines.forEach(line=>{ doc.text(line, marginX+14, y); y += 12; });
+      instrLines.forEach(line=>{ doc.text(line, marginX+14, y); y += 12; });
+      noteLines.forEach(line=>{ doc.text(line, marginX+14, y); y += 12; });
+      doc.setTextColor(20,20,20);
+      y += 12;
+    });
+
+    const filename = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '.pdf';
+    doc.save(filename);
+    showToast('Downloaded ' + filename);
+  }catch(err){
+    console.error(err);
+    showToast('PDF generation failed — try Copy text instead');
+  }
+});
+
+document.getElementById('wordBtn').addEventListener('click', ()=>{
+  const items = getSelectedItems();
+  const title = getSurveyTitle();
+  let bodyHtml = `<h1 style="font-family:Georgia,serif; font-size:20pt; margin-bottom:2pt;">${escapeHtml(title)}</h1>`;
+  bodyHtml += `<p style="font-family:Calibri,sans-serif; font-size:9pt; color:#666; margin-top:0;">Drafted from the SimLab Master Survey Question Bank &middot; ${items.length} item(s)</p><hr/>`;
+  items.forEach((q,i)=>{
+    bodyHtml += `<p style="font-family:Calibri,sans-serif; font-size:12pt; margin-bottom:2pt;"><b>${i+1}. ${escapeHtml(q.question)}</b></p>`;
+    bodyHtml += `<p style="font-family:Calibri,sans-serif; font-size:10pt; color:#555; margin:0 0 2pt 18pt;">Response format: ${escapeHtml(q.scale)}</p>`;
+    if(q.instrument && q.instrument!=='N/A') bodyHtml += `<p style="font-family:Calibri,sans-serif; font-size:10pt; color:#555; margin:0 0 2pt 18pt;">Source instrument: ${escapeHtml(q.instrument)}</p>`;
+    if(q.notes) bodyHtml += `<p style="font-family:Calibri,sans-serif; font-size:10pt; color:#555; margin:0 0 10pt 18pt;">Note: ${escapeHtml(q.notes)}</p>`;
+  });
+
+  const htmlDoc = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="utf-8"><title>${escapeHtml(title)}</title></head>
+    <body>${bodyHtml}</body></html>
+  `;
+  const blob = new Blob(['\ufeff', htmlDoc], {type:'application/msword'});
+  const filename = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '.doc';
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Downloaded ' + filename);
+});
+
+document.getElementById('clearDraftBtn').addEventListener('click', ()=>{
+  state.selectedIds = [];
+  renderDraft();
+  updateFab();
+  render();
+});
+
+// ============ INIT ============
+render();
+renderDraft();
+</script>
+
+</body>
+</html>
